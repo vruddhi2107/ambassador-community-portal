@@ -1,0 +1,66 @@
+name: Sync ambassador sheet & deploy
+
+on:
+  schedule:
+    # Every 6 hours. Adjust as needed (cron is UTC).
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Sync data/ambassadors.json from Google Sheet
+        env:
+          GOOGLE_SHEET_CSV_URL: ${{ secrets.GOOGLE_SHEET_CSV_URL }}
+          INCLUDE_CONTACT_INFO: ${{ vars.INCLUDE_CONTACT_INFO || 'true' }}
+        run: python scripts/sync_sheet.py
+
+      - name: Commit updated data (if changed)
+        run: |
+          git config user.name "on2cook-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/ambassadors.json js/ambassadors-data.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: sync ambassador data from Google Sheet [skip ci]"
+            git push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

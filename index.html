@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On2Cook Ambassador Network</title>
+<meta name="description" content="On2Cook Ambassador Network — an interactive map of ambassadors across India.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="page-shell site-header__inner">
+
+    <!-- Logo slot: drop a file at assets/logo.png (or .svg) and it appears
+         automatically. Until then this stays empty and only the text
+         wordmark shows — see README "Adding your logo". -->
+    <div class="brand">
+      <span class="brand__logo-slot">
+        <img src="assets/logo.png" alt="On2Cook logo" class="brand__logo-img"
+             onerror="this.parentElement.remove()">
+      </span>
+      <!-- <span class="brand__text">
+        <span class="brand__mark">On<span class="brand__dot">2</span>Cook</span>
+        <span class="brand__sub">Ambassador&nbsp;Network</span>
+      </span> -->
+    </div>
+
+    <div class="header-controls">
+      <div class="header-search">
+        <label class="sr-only" for="searchInput">Search ambassadors</label>
+        <span class="header-search__icon" data-icon="search"></span>
+        <input type="search" id="searchInput" placeholder="Search by code, name, brand, city…" autocomplete="off">
+        <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>&times;</button>
+      </div>
+
+      <div class="filter-wrap">
+        <button type="button" id="filterToggle" class="filter-btn" aria-expanded="false">
+          <span data-icon="sliders"></span>
+          <span>Filters</span>
+          <span class="filter-btn__badge" id="filterBadge" hidden>0</span>
+        </button>
+
+        <div class="filter-panel" id="filterPanel" hidden>
+          <div class="filter-panel__head">
+            <span class="filter-panel__title">Filter ambassadors</span>
+            <button type="button" id="filterClear" class="filter-clear" hidden>Clear all</button>
+          </div>
+
+          <div class="filter-panel__search">
+            <span data-icon="search"></span>
+            <input type="search" id="filterSearchInput" placeholder="Search by code, name, brand, city…" autocomplete="off">
+          </div>
+
+          <div class="filter-panel__chips" id="filterChips" hidden></div>
+
+          <div class="filter-panel__columns">
+            <div class="filter-group">
+              <p class="filter-group__label">State</p>
+              <div class="filter-group__search">
+                <span data-icon="search"></span>
+                <input type="search" id="stateFilterSearch" placeholder="Search states" autocomplete="off">
+              </div>
+              <div class="filter-checklist" id="stateChecklist"></div>
+            </div>
+            <div class="filter-group">
+              <p class="filter-group__label">City</p>
+              <p class="filter-group__hint" id="cityGroupHint" hidden></p>
+              <div class="filter-group__search">
+                <span data-icon="search"></span>
+                <input type="search" id="cityFilterSearch" placeholder="Search cities" autocomplete="off">
+              </div>
+              <div class="filter-checklist" id="cityChecklist"></div>
+            </div>
+          </div>
+
+          <div class="filter-panel__foot">
+            <button type="button" id="filterDone" class="filter-done">Show results</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<section class="hero">
+  <div class="page-shell hero__inner">
+    <div class="hero__copy">
+      <p class="hero__eyebrow">National ambassador network</p>
+      <h1 class="hero__headline">India,<br><span class="hero__accent">represented</span><br>city by city.</h1>
+      <p class="hero__sub">Every highlighted state on the map has an active On2Cook ambassador. Tap in to see who's repping your brand where.</p>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__map-wrap" aria-hidden="true">
+        <svg class="hero__map" id="heroMap" viewBox="0 0 612 696"></svg>
+      </div>
+      <div class="hero__stats" id="headerStats" aria-live="polite">
+        <div class="hero-stat">
+          <span class="hero-stat__icon" data-icon="users"></span>
+          <span class="hero-stat__value" id="statTotal">&mdash;</span>
+          <span class="hero-stat__label">Ambassadors</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__icon" data-icon="pin"></span>
+          <span class="hero-stat__value" id="statStates">&mdash;</span>
+          <span class="hero-stat__label">States</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__icon" data-icon="building"></span>
+          <span class="hero-stat__value" id="statCities">&mdash;</span>
+          <span class="hero-stat__label">Cities</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="page-shell console">
+
+  <section class="map-panel" aria-label="Ambassador coverage map of India">
+    <div class="map-panel__head">
+      <p class="map-panel__eyebrow">Coverage map</p>
+      <h2 class="map-panel__title">Where our ambassadors are</h2>
+      <p class="map-panel__hint">Select a state to see its cities</p>
+    </div>
+
+    <div class="map-wrap">
+      <svg id="indiaMap" viewBox="0 0 612 696" role="img" aria-label="Map of India showing ambassador coverage by state"></svg>
+      <div class="map-tooltip" id="mapTooltip" hidden></div>
+    </div>
+
+    <div class="map-panel__footer">
+      <div class="map-legend">
+        <span class="map-legend__gradient"></span>
+        <span class="map-legend__text">Fewer ambassadors</span>
+        <span class="map-legend__text map-legend__text--end">More ambassadors</span>
+      </div>
+      <button type="button" id="resetMapBtn" class="reset-btn" hidden>&larr; All states</button>
+    </div>
+
+    <div class="map-info">
+      <span class="map-info__icon" data-icon="info"></span>
+      <div>
+        <p class="map-info__title">About this map</p>
+        <p class="map-info__text">Darker shades and the number on each state show how many active On2Cook ambassadors are there.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="drill-panel" aria-label="Ambassador roster">
+
+    <ol class="flow-steps" id="flowSteps">
+      <li class="flow-steps__step is-active" data-step="1"><span>1</span>Select state</li>
+      <li class="flow-steps__arrow" data-icon="arrowRight"></li>
+      <li class="flow-steps__step" data-step="2"><span>2</span>Select city</li>
+      <li class="flow-steps__arrow" data-icon="arrowRight"></li>
+      <li class="flow-steps__step" data-step="3"><span>3</span>View roster</li>
+    </ol>
+
+    <div class="drill-head" id="drillHead">
+      <div class="drill-head__text">
+        <h2 class="drill-head__title" id="drillTitle">All Ambassadors</h2>
+        <p class="drill-head__meta" id="drillMeta">Pick a state on the map, or browse everyone below.</p>
+      </div>
+      <button type="button" id="viewFullRosterBtn" class="ghost-btn">
+        <span data-icon="externalLink"></span>
+        View full roster
+      </button>
+    </div>
+
+    <div class="city-chips" id="cityChips" hidden></div>
+
+    <div class="roster-grid" id="rosterGrid"></div>
+
+    <button type="button" id="loadMoreBtn" class="load-more-btn" hidden>
+      Load more ambassadors <span data-icon="chevronDown"></span>
+    </button>
+
+    <p class="empty-state" id="emptyState" hidden>No ambassadors match that search.</p>
+
+  </section>
+
+</main>
+
+<!-- <section class="cta-band">
+  <div class="page-shell cta-band__inner">
+    <div class="cta-band__icon" data-icon="usersCircle" aria-hidden="true"></div>
+    <div class="cta-band__text">
+      <p class="cta-band__title">Want to become an ambassador?</p>
+      <p class="cta-band__sub">Join the On2Cook ambassador family and represent your city.</p>
+    </div>
+    <a class="cta-band__btn" href="mailto:partnerships@on2cook.com?subject=Ambassador%20application" target="_blank" rel="noopener">
+      Apply Now <span data-icon="arrowRight"></span>
+    </a>
+  </div>
+</section> -->
+
+<footer class="site-footer">
+  <div class="page-shell site-footer__inner">
+    
+      <span class="brand__logo-slot">
+              <img src="assets/logo.png" alt="On2Cook logo" class="brand__logo-img"
+                  onerror="this.parentElement.remove()">
+      </span>
+    <span class="site-footer__divider" aria-hidden="true"></span>
+    <span id="syncBadge" class="sync-badge">Loading data…</span>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalName">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Close"><span data-icon="close"></span></button>
+
+    <div class="modal-card__grid">
+      <div class="modal-card__left">
+        <div class="modal-card__id">
+          <div class="modal-card__avatar" id="modalAvatar"></div>
+          <div>
+            <h3 class="modal-card__name" id="modalName"></h3>
+            <p class="modal-card__brand" id="modalBrand"></p>
+          </div>
+        </div>
+
+        <div class="modal-card__meta">
+          <span class="modal-card__code" id="modalCode"></span>
+          <span class="modal-card__loc" id="modalLoc"></span>
+        </div>
+
+        <div class="modal-card__section" id="modalAboutSection">
+          <p class="modal-card__section-label" id="modalAboutLabel">About</p>
+          <p class="modal-card__profile" id="modalProfile"></p>
+        </div>
+
+        <div class="modal-card__stats" id="modalStats" hidden></div>
+
+        <div class="modal-card__section" id="modalSpecialtiesSection" hidden>
+          <p class="modal-card__section-label">Specialties</p>
+          <div class="modal-card__tags" id="modalSpecialties"></div>
+        </div>
+
+        <div class="modal-card__actions">
+          <a class="modal-btn modal-btn--primary" id="modalViewProfile" href="#" target="_blank" rel="noopener" hidden>
+            <span data-icon="user"></span> View Profile
+          </a>
+          <a class="modal-btn modal-btn--ghost" id="modalWhatsapp" href="#" target="_blank" rel="noopener" hidden>
+            <span data-icon="chat"></span> Contact on WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="modal-card__right" id="modalRight">
+        <p class="modal-card__section-label">Kitchen / Brand</p>
+        <div class="modal-card__photo" id="modalPhoto">
+          <span data-icon="image"></span>
+        </div>
+        <dl class="modal-card__details" id="modalDetails"></dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/india-map-data.js"></script>
+<script src="js/ambassadors-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
