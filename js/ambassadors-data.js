@@ -2,9 +2,9 @@
 // Loaded as a fallback so the portal also works without a web server.
 window.AMBASSADORS_FALLBACK = {
   "_meta": {
-    "syncedAt": "2026-09-01T16:11:29+00:00",
+    "syncedAt": "2026-09-01T20:40:33+00:00",
     "source": "Google Sheets",
-    "count": 18,
+    "count": 19,
     "includesContactInfo": true
   },
   "ambassadors": [
@@ -443,6 +443,31 @@ window.AMBASSADORS_FALLBACK = {
       "state": "",
       "phone": "",
       "email": "",
+      "profile": "",
+      "instagram": "",
+      "whatsapp": "",
+      "specialties": "",
+      "operationalSince": "",
+      "facebook": "",
+      "kitchenType": "",
+      "servicesOffered": "",
+      "coverageAreas": "",
+      "happyCustomers": "",
+      "dishesServed": "",
+      "rating": "",
+      "profileUrl": "",
+      "photoUrl": ""
+    },
+    {
+      "srNo": 19,
+      "name": "sanyam garg",
+      "brandName": "X",
+      "billingName": "NA",
+      "code": "O2CARC02",
+      "city": "NA",
+      "state": "Delhi",
+      "phone": "NA",
+      "email": "NA",
       "profile": "",
       "instagram": "",
       "whatsapp": "",
