@@ -2,7 +2,7 @@
 // Loaded as a fallback so the portal also works without a web server.
 window.AMBASSADORS_FALLBACK = {
   "_meta": {
-    "syncedAt": "2026-10-23T21:05:42+00:00",
+    "syncedAt": "2026-10-24T03:38:20+00:00",
     "source": "Google Sheets",
     "count": 24,
     "includesContactInfo": true
