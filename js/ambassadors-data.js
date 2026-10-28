@@ -2,7 +2,7 @@
 // Loaded as a fallback so the portal also works without a web server.
 window.AMBASSADORS_FALLBACK = {
   "_meta": {
-    "syncedAt": "2026-10-28T04:29:27+00:00",
+    "syncedAt": "2026-10-28T12:16:33+00:00",
     "source": "Google Sheets",
     "count": 24,
     "includesContactInfo": true
@@ -435,7 +435,7 @@ window.AMBASSADORS_FALLBACK = {
     },
     {
       "srNo": 18,
-      "name": "Bijoy SIrac",
+      "name": "Bijoy Syriac",
       "brandName": "DehyDelight",
       "billingName": "Cochin Energy Systems",
       "code": "O2CBIJ01",
@@ -460,7 +460,7 @@ window.AMBASSADORS_FALLBACK = {
     },
     {
       "srNo": 19,
-      "name": "sanyam garg",
+      "name": "Sanyam garg",
       "brandName": "X",
       "billingName": "NA",
       "code": "O2CARC02",
